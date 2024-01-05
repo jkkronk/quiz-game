@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Scores</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .high-scores-container {
+            background-color: white;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .scores-section {
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="high-scores-container">
+        <div class="scores-section">
+            <h2>All-Time High Scores</h2>
+            <table>
+                <tr>
+                    <th>User</th>
+                    <th>Score</th>
+                </tr>
+                {% for score in all_time_high_scores %}
+                <tr>
+                    <td>{{ score.user_name }}</td>
+                    <td>{{ score.score }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="scores-section">
+            <h2>Today's High Scores</h2>
+            <table>
+                <tr>
+                    <th>User</th>
+                    <th>Score</th>
+                </tr>
+                {% for score in daily_high_scores %}
+                <tr>
+                    <td>{{ score.user_name }}</td>
+                    <td>{{ score.score }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</body>
+</html>

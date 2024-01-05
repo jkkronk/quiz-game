@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Score</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .score-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .score {
+            font-size: 2em;
+            color: #28a745;
+            margin: 20px 0;
+        }
+        .user-name {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            max-width: 600px; /* Optional: limit the maximum width of the table */
+            margin-left: auto;
+            margin-right: auto;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center; /* Center text in table cells */
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .social-share a {
+            margin-top: 10px;
+            display: block; /* Makes each link appear on a new line */
+        }
+        .button-style {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            font-family: 'Arial', sans-serif;
+            display: inline-block; /* To ensure link behaves like a button */
+            text-decoration: none; /* Remove underline from link */
+            margin: 10px 0; /* Consistent margin */
+        }
+        .button-style:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="score-container">
+        <h1>Your Score</h1>
+        <div class="user-name">Great job, {{ user_name }}!</div>
+        <div class="score">{{ score }}</div>
+
+        <!-- Daily High Scores Section -->
+        <div class="daily-high-scores">
+            <h2>Today's High Scores</h2>
+            <table>
+                <tr>
+                    <th>User</th>
+                    <th>Score</th>
+                </tr>
+                {% for high_score in daily_high_scores %}
+                <tr>
+                    <td>{{ high_score.user_name }}</td>
+                    <td>{{ high_score.score }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <!-- Social Share Buttons -->
+        <div class="social-share">
+            <!-- Twitter -->
+            <a href="https://twitter.com/intent/tweet?text=I%20got%20{{ score }}%20in%20Riddle%20Run.%20Try%20to%20beat%20me!%20riddlerun.com" target="_blank" class="button-style">Share on Twitter</a>
+        </div>
+
+        <a href="/" class="button-style">Home</a>
+    </div>
+</body>
+</html>

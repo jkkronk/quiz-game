@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Challenge</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .video-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        video {
+            width: 100%;
+            max-width: 600px; /* Adjust as necessary */
+            border-radius: 8px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+    <script>
+        function checkAnswer() {
+            var userAnswer = document.getElementById("answerInput").value.toLowerCase();
+            const correctAnswer = "{{ correct_answer }}".toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById("answerForm").answer.value = userAnswer; // Assuming there's a hidden input for answer
+                document.getElementById("challengeVideo").pause();
+                document.getElementById("answerForm").submit(); // Ensure this is correctly submitting
+            } else {
+                document.getElementById("answerInput").value = '';
+                alert("Incorrect answer. Try again!");
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="video-container">
+        <h1>Video Challenge</h1>
+        <video id="challengeVideo" autoplay>
+            <source src="{{ url_for('static', filename='quiz.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <form id="answerForm" action="{{ url_for('submit_answer', user_name=user_name) }}" method="post">
+            <input type="hidden" name="start_time" value="{{ start_time }}">
+            <input type="hidden" name="answer" id="hiddenAnswer">
+            <div><input type="text" id="answerInput" placeholder="Where are we going?" required></div>
+            <div><button type="button" onclick="checkAnswer()">Submit Answer</button></div>
+        </form>
+    </div>
+    <script>
+        // Optional: JavaScript to handle video playback events or timing
+    </script>
+</body>
+</html>
