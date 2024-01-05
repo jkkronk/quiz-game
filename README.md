@@ -8,6 +8,8 @@ Have fun!
 
 ## Usage
 ```bash
+export OPENAI_API_KEY=sk-...
+export GOOGLE_API_KEY=...
 export FLASK_APP=server.py
 flash run
 ```
