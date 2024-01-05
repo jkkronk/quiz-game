@@ -4,8 +4,10 @@ import requests
 import polyline
 import numpy as np
 from io import BytesIO
-from video import is_gray_image
+from create_video.video import is_gray_image
 from PIL import Image
+import os
+
 
 def calculate_heading(lat1, lng1, lat2, lng2):
     # Convert degrees to radians
@@ -24,18 +26,24 @@ def calculate_heading(lat1, lng1, lat2, lng2):
     heading = (heading + 360) % 360
     return heading
 
+
 def duration_to_num_points(duration, image_duration=0.4):
     num_points = int(duration / image_duration) + 10  # Add 5 points to ensure enough images
     return num_points
 
-def get_path_coordinates(destination, start_location="", api_key="", num_points=10):
+
+def get_path_coordinates(destination, start_location="", num_points=10, api_key=""):
+    if api_key == "":
+        api_key = os.environ.get('GOOGLE_API_KEY')
+
     destination_coord = get_coordinates_from_city(destination)
 
-    if(start_location == ""):
+    if (start_location == ""):
         # Randomly generate a start location
         lat_random = np.random.uniform(-1, 1)
         lng_random = np.random.uniform(-1, 1)
-        start_coord = destination_coord[0] + lat_random , destination_coord[1] + lng_random  # Slightly offset the start location
+        start_coord = destination_coord[0] + lat_random, destination_coord[
+            1] + lng_random  # Slightly offset the start location
     else:
         start_coord = get_coordinates_from_city(start_location)
 
@@ -78,7 +86,12 @@ def get_path_coordinates(destination, start_location="", api_key="", num_points=
         path_coordinates.append(path_coordinates[-1])
 
     return path_coordinates
-def fetch_street_view_images(api_key, path_coordinates, view="mobile"):
+
+
+def fetch_street_view_images(path_coordinates, view="mobile", api_key=""):
+    if api_key == "":
+        api_key = os.environ.get('GOOGLE_API_KEY')
+
     images = []
 
     size = "390x640" if view == "mobile" else "630x400"
@@ -111,6 +124,7 @@ def fetch_street_view_images(api_key, path_coordinates, view="mobile"):
                 images.append(img)
 
     return images
+
 
 def get_coordinates_from_city(city):
     base_url = "https://nominatim.openstreetmap.org/search"
