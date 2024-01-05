@@ -1,8 +1,9 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, jsonify
 import time
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
+import json
 
 import utils
 
@@ -33,25 +34,14 @@ def video(user_name):
 
 @app.route('/submit_answer/<user_name>', methods=['POST'])
 def submit_answer(user_name):
-    answer_file_path = os.path.join(app.static_folder, 'answer.txt')
+    video_file_path = os.path.join(app.static_folder, 'quiz.mp4')
+    start_time = float(request.form['start_time'])
+    end_time = time.time()
+    time_taken = end_time - start_time
+    score = utils.calculate_score(time_taken, video_file_path)
+    utils.save_high_score(user_name, score)
 
-    with open(answer_file_path, 'r') as file:
-        correct_answer = file.read().strip().lower()
-
-    user_answer = request.form['answer'].lower()
-    if user_answer == correct_answer:
-        video_file_path = os.path.join(app.static_folder, 'quiz.mp4')
-
-        start_time = float(request.form['start_time'])
-        end_time = time.time()
-        time_taken = end_time - start_time
-        score = utils.calculate_score(time_taken, video_file_path)
-        utils.save_high_score(user_name, score)
-
-        return redirect(url_for('score', user_name=user_name, score=score))
-    else:
-        # Redirect back to the video page if the answer is incorrect
-        return redirect(url_for('video', user_name=user_name))
+    return redirect(url_for('score', user_name=user_name, score=score))
 
 # Route for the score page
 @app.route('/score/<user_name>/<score>')
@@ -64,6 +54,13 @@ def high_scores():
     all_time_high_scores = utils.get_all_time_high_scores()  # Function to get all-time high scores
     daily_high_scores = utils.get_daily_high_scores()  # Function to get today's high scores
     return render_template('high_scores.html', all_time_high_scores=all_time_high_scores, daily_high_scores=daily_high_scores)
+
+
+@app.route('/explanations')
+def explanations():
+    clues_and_explanations = utils.get_explanations(os.path.join(app.static_folder, 'quiz.json'))
+    return render_template('explanations.html', explanations=clues_and_explanations)
+
 
 # Initialize Scheduler
 scheduler = BackgroundScheduler()

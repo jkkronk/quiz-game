@@ -69,6 +69,21 @@ def get_answer(file_path):
         data = json.load(file)
     return data["city"]
 
+def get_explanations(file_path):
+    # Load the JSON data
+    with open(file_path) as f:
+        quiz_data = json.load(f)
+    explanations = quiz_data.get('explanations', [])
+    clues = quiz_data.get('clues', [])
+    clues_and_explanations = []
+    for idx, clue in enumerate(clues):
+        clues_and_explanations.append("<b>" + clue + "</b>")
+        clues_and_explanations.append("Explanation: " + explanations[idx] + "<br><br>")
+
+    return clues_and_explanations
+
+
+
 def save_high_score(user_name, score):
     daily_high_scores_file = 'static/daily_high_scores.json'
     save_high_score_to_file(user_name, score, daily_high_scores_file)

@@ -41,9 +41,8 @@
     </style>
     <script>
         function checkAnswer() {
-            var userAnswer = document.getElementById("answerInput").value.toLowerCase();
-            const correctAnswer = "{{ correct_answer }}".toLowerCase();
-
+            var userAnswer = document.getElementById("answerInput").value.toLowerCase().replace(/\s+/g, '');
+            const correctAnswer = "{{ correct_answer }}".toLowerCase().replace(/\s+/g, '');
             if (userAnswer === correctAnswer) {
                 document.getElementById("answerForm").answer.value = userAnswer; // Assuming there's a hidden input for answer
                 document.getElementById("challengeVideo").pause();
@@ -70,7 +69,13 @@
         </form>
     </div>
     <script>
-        // Optional: JavaScript to handle video playback events or timing
+        document.getElementById("answerInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Prevent default form submit
+            checkAnswer();
+        }
+    });
     </script>
+
 </body>
 </html>
