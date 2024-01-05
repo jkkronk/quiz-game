@@ -40,8 +40,8 @@ def get_path_coordinates(destination, start_location="", num_points=10, api_key=
 
     if (start_location == ""):
         # Randomly generate a start location
-        lat_random = np.random.uniform(-0.5, 0.5)
-        lng_random = np.random.uniform(-0.5, 0.5)
+        lat_random = np.random.uniform(-0.75, 0.75)
+        lng_random = np.random.uniform(-0.75, 0.75)
         start_coord = destination_coord[0] + lat_random, destination_coord[
             1] + lng_random  # Slightly offset the start location
     else:
@@ -60,11 +60,12 @@ def get_path_coordinates(destination, start_location="", num_points=10, api_key=
 
     # Make the request
     response = requests.get(base_url, params=params)
-
+    # print(response.json())
     if response.status_code != 200:
         raise ConnectionError("Failed to connect to the Directions API")
 
     if response.json()['status'] != "OK":
+        print("Direction status: " + response.json()['status'])
         return []
     directions = response.json()
 
@@ -82,8 +83,9 @@ def get_path_coordinates(destination, start_location="", num_points=10, api_key=
     # Trim or extend the list to match the desired number of points
     if len(path_coordinates) > num_points:
         path_coordinates = path_coordinates[:num_points]
-    while len(path_coordinates) < num_points:
-        path_coordinates.append(path_coordinates[-1])
+    if len(path_coordinates) < num_points:
+        print("Not enough points in the path")
+        return []
 
     return path_coordinates
 
