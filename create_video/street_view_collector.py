@@ -40,15 +40,15 @@ def get_path_coordinates(destination, start_location="", num_points=10, api_key=
 
     if (start_location == ""):
         # Randomly generate a start location
-        lat_random = np.random.uniform(-1, 1)
-        lng_random = np.random.uniform(-1, 1)
+        lat_random = np.random.uniform(-0.5, 0.5)
+        lng_random = np.random.uniform(-0.5, 0.5)
         start_coord = destination_coord[0] + lat_random, destination_coord[
             1] + lng_random  # Slightly offset the start location
     else:
         start_coord = get_coordinates_from_city(start_location)
 
     print(f"Start Location: {start_coord}")
-    print(f"\nDestination: {destination_coord}")
+    print(f"Destination: {destination_coord}")
 
     # Set up the request to the Google Directions API
     base_url = "https://maps.googleapis.com/maps/api/directions/json"
@@ -60,13 +60,13 @@ def get_path_coordinates(destination, start_location="", num_points=10, api_key=
 
     # Make the request
     response = requests.get(base_url, params=params)
+
     if response.status_code != 200:
         raise ConnectionError("Failed to connect to the Directions API")
 
+    if response.json()['status'] != "OK":
+        return []
     directions = response.json()
-
-    if not directions['routes']:
-        raise ValueError("No routes found for the given locations.")
 
     # Extract the polyline from the first route
     encoded_polyline = directions['routes'][0]['overview_polyline']['points']

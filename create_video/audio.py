@@ -24,7 +24,7 @@ async def generate_audio_chunk(client, voice, chunk, nr):
 
 async def quiz_2_speech_openai(quiz, voice, openai_api_key=""):
     if openai_api_key == "":
-        client = AsyncOpenAI(api_key=instructor.patch(OpenAI()))
+        client = AsyncOpenAI()
     else:
         client = AsyncOpenAI(api_key=openai_api_key)
 
@@ -68,7 +68,7 @@ async def quiz_2_speech_openai(quiz, voice, openai_api_key=""):
 
 async def text_2_speech_openai(text, voice, openai_api_key=""):
     if openai_api_key == "":
-        client = AsyncOpenAI(api_key=instructor.patch(OpenAI()))
+        client = AsyncOpenAI()
     else:
         client = AsyncOpenAI(api_key=openai_api_key)
 

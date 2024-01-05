@@ -62,7 +62,7 @@ def random_destination() -> str:
     # Selecting a random city from the list
     random_city = random.choice(cities_list)
 
-    return random_city
+    return random_city.replace("\n", "")
 
 def create_quiz(city:str, openai_api_key="") -> QuizClues:
     if openai_api_key == "":
