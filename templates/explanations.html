@@ -38,6 +38,7 @@
             background-color: #0056b3;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 <body>
     <div class="score-container">
@@ -47,7 +48,9 @@
                 <p>{{ explanation | safe }}</p> <!-- Ensure 'explanation' is HTML safe if it contains HTML tags -->
             {% endfor %}
         </div>
-        <a href="/" class="button-style">Back to Home</a>
+        <a href="/" class="button-style">
+            <i class="fas fa-home"></i> <!-- Home icon -->
+        </a>
     </div>
 </body>
 </html>
