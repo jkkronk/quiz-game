@@ -62,7 +62,7 @@
 <body>
     <div class="high-scores-container">
         <div class="scores-section">
-            <h2>All-Time High Scores</h2>
+            <h2>All-Time Highscore</h2>
             <table>
                 <tr>
                     <th>User</th>
@@ -71,14 +71,14 @@
                 {% for score in all_time_high_scores %}
                 <tr>
                     <td>{{ score.user_name }}</td>
-                    <td>{{ score.score }}</td>
+                    <td>{{ score.total_score }}</td>
                 </tr>
                 {% endfor %}
             </table>
         </div>
 
         <div class="scores-section">
-            <h2>Today's High Scores</h2>
+            <h2>Today's Highscore</h2>
             <table>
                 <tr>
                     <th>User</th>
@@ -87,7 +87,7 @@
                 {% for score in daily_high_scores %}
                 <tr>
                     <td>{{ score.user_name }}</td>
-                    <td>{{ score.score }}</td>
+                    <td>{{ score.daily_score }}</td>
                 </tr>
                 {% endfor %}
             </table>

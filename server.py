@@ -1,15 +1,17 @@
 import random
-
-from flask import Flask, request, render_template, redirect, url_for, jsonify
 import time
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
-import json
+from flask import Flask, request, render_template, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 
 import utils
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+db = SQLAlchemy(app)
+
 
 # Route for the home page
 @app.route('/', methods=['GET', 'POST'])
@@ -28,9 +30,9 @@ def video():
 
 @app.route('/high_scores')
 def high_scores():
-    all_time_high_scores = utils.get_all_time_high_scores()  # Function to get all-time high scores
-    daily_high_scores = utils.get_daily_high_scores()  # Function to get today's high scores
-    return render_template('high_scores.html', all_time_high_scores=all_time_high_scores, daily_high_scores=daily_high_scores)
+    daily_scores = HighScore.query.order_by(HighScore.daily_score.desc()).all()
+    all_time_high_scores = HighScore.query.order_by(HighScore.total_score.desc()).all()
+    return render_template('high_scores.html', all_time_high_scores=all_time_high_scores, daily_high_scores=daily_scores)
 
 
 @app.route('/info')
@@ -50,8 +52,22 @@ def submit_answer():
 # Route for the score page
 @app.route('/score/<score>')
 def score(score):
-    daily_high_scores = utils.get_daily_high_scores()  # This function should return today's high scores
-    return render_template('score.html', score=score, daily_high_scores=daily_high_scores)
+    daily_scores = HighScore.query.order_by(HighScore.daily_score.desc()).all()
+    return render_template('score.html', score=score, daily_high_scores=daily_scores)
+
+
+class HighScore(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.String(50))
+    daily_score = db.Column(db.Integer)
+    total_score = db.Column(db.Integer)
+
+    def __repr__(self):
+        return '<HighScore %r>' % self.user_name
+
+
+with app.app_context():
+    db.create_all()
 
 
 @app.route('/explanations')
