@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Challenge</title>
+    <title>Where are we going?</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -61,7 +61,7 @@
             <source src="{{ url_for('static', filename='quiz.mp4') }}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-        <form id="answerForm" action="{{ url_for('submit_answer', user_name=user_name) }}" method="post">
+        <form id="answerForm" action="{{ url_for('submit_answer') }}" method="post">
             <input type="hidden" name="start_time" value="{{ start_time }}">
             <input type="hidden" name="answer" id="hiddenAnswer">
             <div><input type="text" id="answerInput" placeholder="Where are we going?" required></div>
