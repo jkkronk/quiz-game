@@ -48,13 +48,22 @@
         form {
             margin-bottom: 5px;
         }
+        .logo {
+            max-width: 200px; /* or any size you prefer */
+            height: auto; /* maintain aspect ratio */
+            display: block; /* makes the image a block element */
+            margin: 0 auto; /* center the logo in the container */
+            border: 2px solid #007bff; /* adds a blue border around the logo */
+        }
     </style>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 <body>
      <div class="container">
-        <h1>Roadtrip Riddle</h1>
+        <div class="logo-container">
+        <img src="/static/logo.png" alt="Logo" class="logo">
+        </div>
         <a href="/video" class="button-style">
             <i class="fas fa-play"></i> <!-- Play icon -->
         </a>

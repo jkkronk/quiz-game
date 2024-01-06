@@ -5,13 +5,29 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 from flask import Flask, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_oauthlib.client import OAuth
 
 import utils
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+
 db = SQLAlchemy(app)
 
+oauth = OAuth(app)
+google = oauth.remote_app(
+    'google',
+    consumer_key='933964174540-8ij15f7ne7s88m7s748jvr19u9vsmdug.apps.googleusercontent.com',
+    consumer_secret=os.environ.get('GOOGLE_OAUTH_SECRET'),
+    request_token_params={
+        'scope': 'email'
+    },
+    base_url='https://www.googleapis.com/oauth2/v1/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+)
 
 # Route for the home page
 @app.route('/', methods=['GET', 'POST'])
@@ -56,8 +72,29 @@ def score(score):
     return render_template('score.html', score=score, daily_high_scores=daily_scores)
 
 
+@app.route('/login')
+def login():
+    return google.authorize(callback=url_for('authorized', _external=True))
+
+
+@app.route('/login/authorized')
+def authorized():
+    resp = google.authorized_response()
+    if resp is None or resp.get('access_token') is None:
+        return 'Access denied: reason={} error={}'.format(
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    session['google_token'] = (resp['access_token'], '')
+    user_info = google.get('userinfo')
+    # Use user_info.data to get user details and manage session
+    return redirect(url_for('index'))
+
+
+
 class HighScore(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    google_user_id = db.Column(db.String(100))  # Store Google user ID or email
     user_name = db.Column(db.String(50))
     daily_score = db.Column(db.Integer)
     total_score = db.Column(db.Integer)

@@ -56,15 +56,15 @@
 </head>
 <body>
     <div class="video-container">
-        <h1>Roadtrip Riddle!</h1>
         <video id="challengeVideo" autoplay>
             <source src="{{url_for('static', filename='quiz.mp4')}}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
+        <p>What is our destination?</p>
         <form id="answerForm" action="{{url_for('submit_answer')}}" method="post">
             <input type="hidden" name="start_time" value="{{ start_time }}">
             <input type="hidden" name="answer" id="hiddenAnswer">
-            <div><input type="text" id="answerInput" placeholder="Where are we going?" required></div>
+            <div><input type="text" id="answerInput" placeholder="Atlantis" required></div>
             <div><button type="button" onclick="checkAnswer()">Submit Answer</button></div>
         </form>
     </div>
