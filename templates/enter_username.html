@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Already Submitted</title>
+    <title>Enter Username</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -87,12 +86,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 <body>
-    <div class="score-container">
-        <h1>Score Already Submitted</h1>
-        <p>You have already submitted your score for today. Please come back tomorrow to submit a new score.</p>
-        <a href="/" class="button-style">
-            <i class="fas fa-home"></i> <!-- Home icon -->
-        </a>
+     <div class="score-container">
+        <h1>Welcome to Score Tracker!</h1>
+        <p>
+            Congratulations on submitting your first score! <br>
+            To keep track of your scores, please set a username. <br>
+            This username will be used to display your scores on the leaderboard.
+        </p>
+        <form action="{{ url_for('submit_username') }}" method="post">
+            <input type="hidden" name="google_user_id" value="{{ google_user_id }}">
+            <div>
+                <label for="username">Choose a Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div style="margin-top: 20px;">
+                <input type="submit" value="Submit" class="button-style">
+            </div>
+        </form>
     </div>
 </body>
 </html>

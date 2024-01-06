@@ -6,6 +6,7 @@ import atexit
 from flask import Flask, request, render_template, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_oauthlib.client import OAuth
+from pytz import timezone
 
 import utils
 
@@ -108,23 +109,38 @@ def submit_score():
     google_user_id = user_info.get('id')
     user_name = user_info.get('name', 'Unknown User')
 
-    existing_score = HighScore.query.filter_by(google_user_id=google_user_id).first()
+    existing = HighScore.query.filter_by(google_user_id=google_user_id).first()
 
-    if existing_score and existing_score.daily_score != -1:
+    if existing and existing.daily_score != -1:
         # User already submitted a score today
         return redirect(url_for('already_submitted'))  # Redirect or handle as needed
     else:
         # Either no score submitted today or score is -1
-        if existing_score:
+        if existing:
             # Update existing score
-            existing_score.daily_score = score
+            existing.daily_score = score
+            existing.total_score += score
         else:
-            # Create new score entry
-            new_score = HighScore(google_user_id=google_user_id, daily_score=score, total_score=score)
-            db.session.add(new_score)
+            session['temp_score'] = request.args.get('score')
+            return render_template('enter_username.html', google_user_id=google_user_id)
 
         db.session.commit()
         return redirect(url_for('high_scores'))
+
+
+@app.route('/submit_username', methods=['POST'])
+def submit_username():
+    google_user_id = request.form['google_user_id']
+    username = request.form['username']
+    score = session.pop('temp_score', 0)  # Default to 0 if not found
+
+    # Create new score entry with the username
+    new_score = HighScore(google_user_id=google_user_id, user_name=username, daily_score=score, total_score=score)
+    db.session.add(new_score)
+    db.session.commit()
+
+    # Redirect to the appropriate page after username submission
+    return redirect(url_for('high_scores'))
 
 
 @app.route('/already_submitted')
@@ -160,12 +176,12 @@ def get_google_oauth_token():
 
 # Initialize Scheduler
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=utils.create_new_video, trigger="cron", hour=0)
-scheduler.add_job(func=utils.clear_daily_high_scores, trigger="cron", hour=0)
-scheduler.start()
-
-# Shut down the scheduler when exiting the app
-atexit.register(lambda: scheduler.shutdown())
+cet = timezone('CET')
+scheduler.add_job(func=utils.create_new_video, trigger="cron", hour=5, minute=0, second=0, timezone=cet)
+scheduler.add_job(func=utils.clear_daily_high_scores, trigger="cron", hour=5, minute=0, second=0, timezone=cet)
 
 if __name__ == '__main__':
+    scheduler.start()
     app.run(debug=True)
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: scheduler.shutdown())

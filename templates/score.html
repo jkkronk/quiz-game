@@ -115,10 +115,12 @@
                     <th>Score</th>
                 </tr>
                 {% for high_score in daily_high_scores %}
+                {% if high_score.daily_score is not none and high_score.daily_score >= 0 %}
                 <tr>
                     <td>{{ high_score.user_name }}</td>
-                    <td>{{ high_score.score }}</td>
+                    <td>{{ high_score.daily_score }}</td>
                 </tr>
+                {% endif %}
                 {% endfor %}
             </table>
         </div>

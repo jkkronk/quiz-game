@@ -47,10 +47,14 @@ def create_new_quiz():
     return num_points, city, path_coordinates
 
 def clear_daily_high_scores():
-    high_scores_file = 'static/daily_high_scores.json'
-    # Save back to file
-    with open(high_scores_file, 'w') as file:
-        json.dump([], file, indent=4)
+    from server import db, HighScore  # Import necessary modules
+    try:
+        # Reset daily scores for all users
+        HighScore.query.update({HighScore.daily_score: 0})
+        db.session.commit()
+    except Exception as e:
+        print("Error resetting daily high scores:", e)
+        db.session.rollback()
 
 
 # Function to calculate the score
