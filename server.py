@@ -19,7 +19,7 @@ db = SQLAlchemy(app)
 oauth = OAuth(app)
 google = oauth.remote_app(
     'google',
-    consumer_key='933964174540-8ij15f7ne7s88m7s748jvr19u9vsmdug.apps.googleusercontent.com',
+    consumer_key=os.environ.get('GOOGLE_OAUTH_KEY'),
     consumer_secret=os.environ.get('GOOGLE_OAUTH_SECRET'),
     request_token_params={
         'scope': ['email', 'https://www.googleapis.com/auth/userinfo.profile']
