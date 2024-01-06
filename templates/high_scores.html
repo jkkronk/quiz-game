@@ -69,10 +69,12 @@
                     <th>Score</th>
                 </tr>
                 {% for score in all_time_high_scores %}
+                {% if score.total_score is not none and score.total_score >= 0 %}
                 <tr>
                     <td>{{ score.user_name }}</td>
                     <td>{{ score.total_score }}</td>
                 </tr>
+                {% endif %}
                 {% endfor %}
             </table>
         </div>
@@ -85,10 +87,12 @@
                     <th>Score</th>
                 </tr>
                 {% for score in daily_high_scores %}
+                {% if score.daily_score is not none and score.daily_score >= 0 %}
                 <tr>
                     <td>{{ score.user_name }}</td>
                     <td>{{ score.daily_score }}</td>
                 </tr>
+                {% endif %}
                 {% endfor %}
             </table>
         </div>
