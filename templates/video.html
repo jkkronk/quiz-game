@@ -39,6 +39,7 @@
             background-color: #218838;
         }
     </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <script>
         function checkAnswer() {
             var userAnswer = document.getElementById("answerInput").value.toLowerCase().replace(/\s+/g, '');
@@ -56,6 +57,11 @@
 </head>
 <body>
     <div class="video-container">
+        <div>
+            <button id="togglePlayPause">
+                <i class="fas fa-play"></i> <!-- Play icon -->
+            </button>
+        </div>
         <video id="challengeVideo" autoplay>
             <source src="{{url_for('static', filename='quiz.mp4')}}" type="video/mp4">
             Your browser does not support the video tag.
@@ -64,17 +70,32 @@
         <form id="answerForm" action="{{url_for('submit_answer')}}" method="post">
             <input type="hidden" name="start_time" value="{{ start_time }}">
             <input type="hidden" name="answer" id="hiddenAnswer">
-            <div><input type="text" id="answerInput" placeholder="Atlantis" required></div>
-            <div><button type="button" onclick="checkAnswer()">Submit Answer</button></div>
+            <div>
+                <input type="text" id="answerInput" placeholder="Atlantis" required>
+            </div>
+            <div>
+                <button type="button" onclick="checkAnswer()">Submit Answer</button>
+            </div>
         </form>
     </div>
     <script>
+        // JavaScript to submit form on enter keypress
         document.getElementById("answerInput").addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
             event.preventDefault(); // Prevent default form submit
             checkAnswer();
         }
-    });
+        });
+
+        // JavaScript to toggle video play/pause
+        document.getElementById('togglePlayPause').addEventListener('click', function() {
+            var video = document.getElementById('challengeVideo');
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
     </script>
 
 </body>
