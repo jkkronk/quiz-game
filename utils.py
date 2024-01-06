@@ -13,7 +13,7 @@ def create_new_video():
     # Create the video
     images = street_view_collector.fetch_street_view_images(path_coordinates, "desktop")
     movie = video.images_to_video(images, "static/quiz.mp3", add_logo=False)
-    movie.write_videofile(f"static/quiz.mp4", fps=24)
+    movie.write_videofile(f"static/quiz.mp4", fps=24, codec="libx264", audio_codec="aac")
 
 def create_new_quiz():
     # Create a new quiz
