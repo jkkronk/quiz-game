@@ -10,15 +10,15 @@ def create_new_video():
 
     # Create the video
     images = street_view_collector.fetch_street_view_images(path_coordinates, "desktop")
-    movie = video.images_to_video(images, "static/quiz.mp3", add_logo=False)
-    movie.write_videofile(f"static/quiz.mp4", fps=24, codec="libx264", audio_codec="aac")
+    movie = video.images_to_video(images, "/var/data/quiz.mp3", add_logo=False)
+    movie.write_videofile("/var/data/quiz.mp4", fps=24, codec="libx264", audio_codec="aac")
 
 def create_new_quiz():
     # Create a new quiz
     city = quiz.random_destination()
     city_quiz = quiz.create_quiz(city)
     #city_quiz = QuizClues.open("static/quiz.json")
-    city_quiz.save(city, f"static/quiz.json")
+    city_quiz.save(city, "/var/data/quiz.json")
 
     # Create the audio
     host_voice = "echo"
@@ -26,7 +26,7 @@ def create_new_quiz():
     host = quiz.QuizHost("What city is our destination?...", f"... And the correct answer is... {city}")
     sound_intro = asyncio.run(audio.text_2_speech_openai(host.intro, host_voice))
     sound = sound_intro + sound
-    sound.export("static/quiz.mp3", format="mp3")
+    sound.export("/var/data/quiz.mp3", format="mp3")
     #sound = AudioSegment.from_mp3("static/quiz.mp3")
 
     # Create the video
