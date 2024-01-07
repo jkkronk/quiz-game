@@ -188,8 +188,9 @@ def daily_update():
 @app.route('/update_quiz')
 @auth.login_required
 def update_quiz():
-    thread = Thread(target=daily_update)
-    thread.start()
+    # thread = Thread(target=daily_update)
+    # thread.start()
+    daily_update()
     return "Quiz update in progress"
 
 if __name__ == '__main__':
