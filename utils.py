@@ -10,7 +10,6 @@ def create_new_video():
 
     # Create the video
     images = street_view_collector.fetch_street_view_images(path_coordinates, "desktop")
-    print(f"Got {len(images)} images")
     movie = video.images_to_video(images, "/var/data/quiz.mp3", add_logo=False)
     movie.write_videofile("/var/data/quiz.mp4", fps=24, codec="libx264", audio_codec="aac")
 
@@ -46,14 +45,15 @@ def create_new_quiz():
     return num_points, city, path_coordinates
 
 def clear_daily_high_scores():
-    from server import db, HighScore  # Import necessary modules
-    try:
-        # Reset daily scores for all users
-        HighScore.query.update({HighScore.daily_score: 0})
-        db.session.commit()
-    except Exception as e:
-        print("Error resetting daily high scores:", e)
-        db.session.rollback()
+    from server import app, db, HighScore
+    with app.app_context():  # This line creates the application context
+        try:
+            # Reset daily scores for all users
+            HighScore.query.update({HighScore.daily_score: 0})
+            db.session.commit()
+        except Exception as e:
+            print("Error resetting daily high scores:", e)
+            db.session.rollback()
 
 
 # Function to calculate the score
