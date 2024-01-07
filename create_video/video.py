@@ -44,7 +44,7 @@ def images_to_video(images, audio_file=None, image_duration = 0.4, crop_bottom=T
     if audio_file:
         audio = mpy.AudioFileClip(audio_file)
         audio_duration = audio.duration
-
+        print("Audio duration:", audio_duration)
         if audio_duration < len(images) * image_duration:
             # Calculate number of frames to keep based on audio duration
             frames_to_keep = int(audio_duration / image_duration)
