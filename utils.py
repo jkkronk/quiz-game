@@ -10,6 +10,7 @@ def create_new_video():
 
     # Create the video
     images = street_view_collector.fetch_street_view_images(path_coordinates, "desktop")
+    print(f"Got {len(images)} images")
     movie = video.images_to_video(images, "/var/data/quiz.mp3", add_logo=False)
     movie.write_videofile("/var/data/quiz.mp4", fps=24, codec="libx264", audio_codec="aac")
 
