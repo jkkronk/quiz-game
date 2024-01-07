@@ -42,8 +42,7 @@ def home():
 def video():
     # Path to the text file with the answer
     correct_answer = utils.get_answer(os.path.join(app.static_folder, 'quiz.json'))
-    start_time = time.time()
-    return render_template('video.html', start_time=start_time, correct_answer=correct_answer)
+    return render_template('video.html', correct_answer=correct_answer)
 
 
 @app.route('/high_scores')
@@ -65,7 +64,7 @@ def submit_answer():
     end_time = time.time()
     time_taken = end_time - start_time
     score = utils.calculate_score(time_taken, video_file_path)
-    session['latest_score'] = score  # Storing the latest score in session
+    session['latest_score'] = score
     return redirect(url_for('score', score=score))
 
 # Route for the score page
