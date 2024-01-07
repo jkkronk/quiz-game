@@ -37,7 +37,7 @@ def home():
 @app.route('/video')
 def video():
     # Path to the text file with the answer
-    correct_answer = utils.get_answer(os.path.join(app.static_folder, 'quiz.json'))
+    correct_answer = utils.get_answer("/var/data/quiz.json")
     return render_template('video.html', correct_answer=correct_answer)
 
 
@@ -55,7 +55,7 @@ def info():
 
 @app.route('/submit_answer', methods=['POST'])
 def submit_answer():
-    video_file_path = os.path.join(app.static_folder, 'quiz.mp4')
+    video_file_path = "/var/data/quiz.mp4"
     start_time = float(request.form['start_time'])
     end_time = time.time()
     time_taken = end_time - start_time
@@ -160,7 +160,7 @@ with app.app_context():
 
 @app.route('/explanations')
 def explanations():
-    clues_and_explanations = utils.get_explanations(os.path.join(app.static_folder, 'quiz.json'))
+    clues_and_explanations = utils.get_explanations("/var/data/quiz.json")
     return render_template('explanations.html', explanations=clues_and_explanations)
 
 
