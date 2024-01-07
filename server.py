@@ -4,6 +4,7 @@ from flask import Flask, request, render_template, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_oauthlib.client import OAuth
 from flask_httpauth import HTTPBasicAuth
+from threading import Thread
 
 import utils
 
@@ -179,12 +180,17 @@ def verify_password(username, password):
     if username in users and users[username] == password:
         return username
 
+def daily_update():
+    utils.create_new_video()
+    utils.clear_daily_high_scores()
+    pass
+
 @app.route('/update_quiz')
 @auth.login_required
 def update_quiz():
-    utils.create_new_video()
-    utils.clear_daily_high_scores()
-    return "Quiz updated successfully"
+    thread = Thread(target=daily_update)
+    thread.start()
+    return "Quiz update in progress"
 
 if __name__ == '__main__':
     app.run(debug=True)
