@@ -3,12 +3,18 @@ import os
 from flask import Flask, request, render_template, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_oauthlib.client import OAuth
+from flask_httpauth import HTTPBasicAuth
 
 import utils
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.secret_key = os.urandom(24)  # Generate a random key
+auth = HTTPBasicAuth()
+
+users = {
+    os.environ.get('FLASK_USER'): os.environ.get('FLASK_PASSWORD')
+}
 
 db = SQLAlchemy(app)
 
@@ -167,6 +173,18 @@ def explanations():
 @google.tokengetter
 def get_google_oauth_token():
     return session.get('google_token')
+
+@auth.verify_password
+def verify_password(username, password):
+    if username in users and users[username] == password:
+        return username
+
+@app.route('/update_quiz')
+@auth.login_required
+def update_quiz():
+    utils.create_new_video()
+    utils.clear_daily_high_scores()
+    return "Quiz updated successfully"
 
 if __name__ == '__main__':
     app.run(debug=True)
