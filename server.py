@@ -1,12 +1,8 @@
-import random
 import time
 import os
-from apscheduler.schedulers.background import BackgroundScheduler
-import atexit
-from flask import Flask, request, render_template, redirect, url_for, session, flash
+from flask import Flask, request, render_template, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_oauthlib.client import OAuth
-from pytz import timezone
 
 import utils
 
@@ -172,15 +168,5 @@ def explanations():
 def get_google_oauth_token():
     return session.get('google_token')
 
-
-# Initialize Scheduler
-scheduler = BackgroundScheduler()
-cet = timezone('CET')
-scheduler.add_job(func=utils.create_new_video, trigger="cron", hour=5, minute=0, second=0, timezone=cet)
-scheduler.add_job(func=utils.clear_daily_high_scores, trigger="cron", hour=5, minute=0, second=0, timezone=cet)
-
 if __name__ == '__main__':
-    scheduler.start()
     app.run(debug=True)
-    # Shut down the scheduler when exiting the app
-    atexit.register(lambda: scheduler.shutdown())
