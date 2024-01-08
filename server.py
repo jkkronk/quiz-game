@@ -195,19 +195,19 @@ def clear_highscore():
 @app.route('/new_quiz')
 @auth.login_required
 def new_quiz():
-    quiz_creator.create_new_quiz()
+    quiz_creator.create_new_quiz(os.environ.get('RR_DATA_PATH'))
     return "Quiz created!"
 
 @app.route('/new_frames')
 @auth.login_required
 def new_frames():
-    street_view_collector.create_new_frames()
+    street_view_collector.create_new_frames(os.environ.get('RR_DATA_PATH'))
     return "Frames created!"
 
 @app.route('/new_video')
 @auth.login_required
 def new_video():
-    video_creator.create_new_video()
+    video_creator.create_new_video(os.environ.get('RR_DATA_PATH'))
     return "Video created!"
 
 if __name__ == '__main__':

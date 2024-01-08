@@ -2,7 +2,7 @@ import moviepy.editor as mpy
 import os
 
 
-def images_to_video(folder, audio_file=None, image_duration=0.4, batch_size=100):
+def images_to_video(folder, audio_file=None, image_duration=0.4, batch_size=50):
     audio = None
     audio_duration = 0
 

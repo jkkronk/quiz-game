@@ -119,11 +119,6 @@ def create_quiz(city:str, openai_api_key="") -> QuizClues:
 
     return clues
 
-def create_new_video(data_dir="/var/data/", city=""):
-
-        path_coordinates = create_new_quiz(data_dir, city)
-
-
 
 def create_new_quiz(data_dir="/var/data/", city=""):
     path_coordinates = []
