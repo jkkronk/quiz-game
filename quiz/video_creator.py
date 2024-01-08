@@ -1,32 +1,44 @@
 import moviepy.editor as mpy
 import os
 
-def images_to_video(folder, audio_file=None, image_duration = 0.4):
-    clips = []
 
+def images_to_video(folder, audio_file=None, image_duration=0.4, batch_size=50):
     audio = None
     audio_duration = 0
 
-    # If audio is provided and its duration is shorter than the total image duration, cut excess frames
+    # Load audio if provided
     if audio_file:
         audio = mpy.AudioFileClip(audio_file)
         audio_duration = audio.duration
         print("Audio duration:", audio_duration)
 
-    filenames = [filename for filename in os.listdir(folder) if filename.endswith(".jpg") or filename.endswith(".jpeg")]
+    # Get sorted filenames
+    filenames = [f for f in os.listdir(folder) if f.endswith((".jpg", ".jpeg"))]
     sorted_filenames = sorted(filenames, key=lambda x: int(x.split('.')[0]))
 
-    for filename in sorted_filenames:
+    final_clips = []
+    batch_clips = []
+
+    for i, filename in enumerate(sorted_filenames):
         print(filename)
-        if filename.endswith(".jpg") or filename.endswith(".jpeg"):
+        if filename.endswith((".jpg", ".jpeg")):
             clip = mpy.ImageClip(os.path.join(folder, filename)).set_duration(image_duration)
-            clips.append(clip)
-            if audio_duration < len(clips) * image_duration:
+            batch_clips.append(clip)
+
+            # Check audio duration limit
+            if audio_duration < len(batch_clips) * image_duration:
                 break
 
-    print("Number of frames:", len(clips))
-    movie = mpy.concatenate_videoclips(clips, method="compose")
+            # Process in batches
+            if (i + 1) % batch_size == 0 or (i + 1) == len(sorted_filenames):
+                batch_movie = mpy.concatenate_videoclips(batch_clips, method="compose")
+                final_clips.append(batch_movie)
+                batch_clips = []
 
+    # Concatenate final clips
+    movie = mpy.concatenate_videoclips(final_clips, method="compose")
+
+    # Add audio if available
     if audio_file:
         movie = movie.set_audio(audio)
 
