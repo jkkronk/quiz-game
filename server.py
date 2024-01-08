@@ -1,6 +1,6 @@
 import time
 import os
-from flask import Flask, request, render_template, redirect, url_for, session
+from flask import Flask, request, render_template, redirect, url_for, session, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_oauthlib.client import OAuth
 from flask_httpauth import HTTPBasicAuth
@@ -39,14 +39,18 @@ def home():
     return render_template('home.html')
 
 
+@app.route('/get_video')
+def get_video():
+    video_path = f"{os.environ.get('RR_DATA_PATH')}quiz.mp4"
+    return send_file(video_path, as_attachment=True)
+
+
 # Route for the video page
 @app.route('/video')
 def video():
-    quiz_path = f"{os.environ.get('RR_DATA_PATH')}quiz.json"
-    video_path = f"{os.environ.get('RR_DATA_PATH')}quiz.mp4"
-
+    quiz_path = os.path.join(os.environ.get('RR_DATA_PATH'), "quiz.json")
     correct_answer = utils.get_answer(quiz_path)
-    return render_template('video.html', correct_answer=correct_answer, video_path=video_path)
+    return render_template('video.html', correct_answer=correct_answer)
 
 
 @app.route('/high_scores')
@@ -63,7 +67,7 @@ def info():
 
 @app.route('/submit_answer', methods=['POST'])
 def submit_answer():
-    video_path = f"{os.environ.get('RR_DATA_PATH')}quiz.mp4"
+    video_path = os.path.join(os.environ.get('RR_DATA_PATH'),"quiz.mp4")
     start_time = float(request.form['start_time'])
     end_time = time.time()
     time_taken = end_time - start_time
@@ -168,7 +172,7 @@ with app.app_context():
 
 @app.route('/explanations')
 def explanations():
-    quiz_path = f"{os.environ.get('RR_DATA_PATH')}quiz.json"
+    quiz_path = os.path.join(os.environ.get('RR_DATA_PATH'),"quiz.json")
     return render_template('explanations.html', explanations=quiz_path)
 
 
