@@ -2,7 +2,7 @@ import moviepy.editor as mpy
 import os
 
 
-def images_to_video(folder, audio_file=None, image_duration=0.4, batch_size=50):
+def images_to_video(folder, audio_file=None, image_duration=0.4, batch_size=50, max_clips=140):
     audio = None
     audio_duration = 0
 
@@ -32,7 +32,7 @@ def images_to_video(folder, audio_file=None, image_duration=0.4, batch_size=50):
                 batch_clips = []
 
             # Check audio duration limit
-            if audio_duration < len(final_clips) * image_duration:
+            if audio_duration < len(final_clips) * image_duration or len(final_clips) >= max_clips:
                 break
 
     # Concatenate final clips
