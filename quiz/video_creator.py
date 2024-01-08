@@ -27,7 +27,7 @@ def images_to_video(folder, audio_file=None, image_duration=0.4, batch_size=100)
         if (i + 1) % batch_size == 0 or i == len(sorted_filenames) - 1:
             intermediate_clip = mpy.concatenate_videoclips(batch_clips, method="compose")
             intermediate_filename = f"intermediate_{len(intermediate_files)}.mp4"
-            intermediate_clip.write_videofile(os.path.join(folder, intermediate_filename), codec="libx264")
+            intermediate_clip.write_videofile(os.path.join(folder, intermediate_filename), codec="libx264", fps=24)
             intermediate_files.append(os.path.join(folder, intermediate_filename))
             batch_clips = []  # Reset batch clips
 
