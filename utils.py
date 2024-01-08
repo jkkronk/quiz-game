@@ -8,7 +8,7 @@ def clear_daily_high_scores():
     with app.app_context():  # This line creates the application context
         try:
             # Reset daily scores for all users
-            HighScore.query.update({HighScore.daily_score: 0})
+            HighScore.query.update({HighScore.daily_score: -1})
             db.session.commit()
         except Exception as e:
             print("Error resetting daily high scores:", e)
