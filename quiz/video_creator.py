@@ -25,15 +25,15 @@ def images_to_video(folder, audio_file=None, image_duration=0.4, batch_size=50):
             clip = mpy.ImageClip(os.path.join(folder, filename)).set_duration(image_duration)
             batch_clips.append(clip)
 
-            # Check audio duration limit
-            if audio_duration < len(batch_clips) * image_duration:
-                break
-
             # Process in batches
             if (i + 1) % batch_size == 0 or (i + 1) == len(sorted_filenames):
                 batch_movie = mpy.concatenate_videoclips(batch_clips, method="compose")
                 final_clips.append(batch_movie)
                 batch_clips = []
+
+                # Check audio duration limit
+                if audio_duration < len(final_clips) * image_duration:
+                    break
 
     # Concatenate final clips
     movie = mpy.concatenate_videoclips(final_clips, method="compose")
