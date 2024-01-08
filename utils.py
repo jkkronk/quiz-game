@@ -2,8 +2,6 @@ from moviepy.editor import VideoFileClip
 import json
 from create_video import quiz, audio, video, street_view_collector
 import asyncio
-from pydub import AudioSegment
-from create_video.quiz import QuizClues
 
 def create_new_video():
     path_coordinates = []
@@ -12,15 +10,15 @@ def create_new_video():
 
     # Create the video
     images = street_view_collector.fetch_street_view_images(path_coordinates, "desktop")
-    movie = video.images_to_video(images, "static/quiz.mp3", add_logo=False)
-    movie.write_videofile(f"static/quiz.mp4", fps=24, codec="libx264", audio_codec="aac")
+    movie = video.images_to_video(images, "/var/data/quiz.mp3", add_logo=False)
+    movie.write_videofile("/var/data/quiz.mp4", fps=24, codec="libx264", audio_codec="aac")
 
 def create_new_quiz():
     # Create a new quiz
     city = quiz.random_destination()
     city_quiz = quiz.create_quiz(city)
     #city_quiz = QuizClues.open("static/quiz.json")
-    city_quiz.save(city, f"static/quiz.json")
+    city_quiz.save(city, "/var/data/quiz.json")
 
     # Create the audio
     host_voice = "echo"
@@ -28,7 +26,7 @@ def create_new_quiz():
     host = quiz.QuizHost("What city is our destination?...", f"... And the correct answer is... {city}")
     sound_intro = asyncio.run(audio.text_2_speech_openai(host.intro, host_voice))
     sound = sound_intro + sound
-    sound.export("static/quiz.mp3", format="mp3")
+    sound.export("/var/data/quiz.mp3", format="mp3")
     #sound = AudioSegment.from_mp3("static/quiz.mp3")
 
     # Create the video
@@ -47,10 +45,15 @@ def create_new_quiz():
     return num_points, city, path_coordinates
 
 def clear_daily_high_scores():
-    high_scores_file = 'static/daily_high_scores.json'
-    # Save back to file
-    with open(high_scores_file, 'w') as file:
-        json.dump([], file, indent=4)
+    from server import app, db, HighScore
+    with app.app_context():  # This line creates the application context
+        try:
+            # Reset daily scores for all users
+            HighScore.query.update({HighScore.daily_score: 0})
+            db.session.commit()
+        except Exception as e:
+            print("Error resetting daily high scores:", e)
+            db.session.rollback()
 
 
 # Function to calculate the score
@@ -82,17 +85,7 @@ def get_explanations(file_path):
 
     return clues_and_explanations
 
-
-
-def save_high_score(user_name, score):
-    daily_high_scores_file = 'static/daily_high_scores.json'
-    save_high_score_to_file(user_name, score, daily_high_scores_file)
-
-    all_time_high_scores_file = 'static/all_time_high_scores.json'
-    save_high_score_to_file(user_name, score, all_time_high_scores_file, add_if_existing=True)
-
-
-def save_high_score_to_file(user_name, score, file_name, add_if_existing=False):
+def save_high_score_to_json(user_name, score, file_name, add_if_existing=False):
     # Load existing high scores
     try:
         with open(file_name, 'r') as file:
@@ -113,37 +106,3 @@ def save_high_score_to_file(user_name, score, file_name, add_if_existing=False):
     # Save back to file
     with open(file_name, 'w') as file:
         json.dump(high_scores, file, indent=4)
-
-
-def has_played_today(user_name):
-    daily_high_score_file = 'static/daily_high_scores.json'
-    try:
-        with open(daily_high_score_file, 'r') as file:
-            high_scores = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError):
-        high_scores = []
-
-    for entry in high_scores:
-        if entry['user_name'] == user_name:
-            return True
-    return False
-
-
-def get_daily_high_scores(limit=10):
-    high_scores_file = 'static/daily_high_scores.json'
-    return get_high_scores(high_scores_file, limit)
-
-
-def get_all_time_high_scores(limit=10):
-    high_scores_file = 'static/all_time_high_scores.json'
-    return get_high_scores(high_scores_file, limit)
-
-
-def get_high_scores(path, limit=10):
-    try:
-        with open(path, 'r') as file:
-            high_scores = json.load(file)
-            high_scores = sorted(high_scores, key=lambda x: x['score'], reverse=True)
-            return high_scores[:limit]  # Return top scores
-    except (FileNotFoundError, json.JSONDecodeError):
-        return []  # Return an empty list if no high scores

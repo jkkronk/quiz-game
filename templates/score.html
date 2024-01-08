@@ -37,6 +37,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            width: 100%;
         }
         button:hover {
             background-color: #0056b3;
@@ -66,9 +67,10 @@
             display: block; /* Makes each link appear on a new line */
         }
         .button-style {
+            width: 100%;
             background-color: #007bff;
             color: white;
-            padding: 10px 15px;
+            padding: 10px 0px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -82,12 +84,27 @@
             background-color: #0056b3;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 <body>
     <div class="score-container">
         <h1>Your Score</h1>
-        <div class="user-name">Great job, {{ user_name }}!</div>
         <div class="score">{{ score }}</div>
+        <div class="user-name">Great job!</div>
+
+
+        <!-- Social Share Buttons -->
+        <div class="social-share">
+            <!-- Twitter -->
+            <a href="https://twitter.com/intent/tweet?text=I%20got%20{{ score }}%20points%20in%20Roadtrip%20Riddle.%20Try%20to%20beat%20me!%20roadtrip-riddle.onrender.com" target="_blank" class="button-style">
+                <i class="fab fa-twitter"></i> <!-- Home icon -->
+            </a>
+            <!-- WhatsApp -->
+            <a href="https://wa.me/?text=I%20got%20{{ score }}%20points%20in%20Roadtrip%20Riddle.%20Try%20to%20beat%20me!%20roadtrip-riddle.onrender.com" target="_blank" class="button-style">
+                <i class="fab fa-whatsapp"></i> <!-- Home icon -->
+            </a>
+        </div>
+
 
         <!-- Daily High Scores Section -->
         <div class="daily-high-scores">
@@ -98,32 +115,36 @@
                     <th>Score</th>
                 </tr>
                 {% for high_score in daily_high_scores %}
+                {% if high_score.daily_score is not none and high_score.daily_score >= 0 %}
                 <tr>
                     <td>{{ high_score.user_name }}</td>
-                    <td>{{ high_score.score }}</td>
+                    <td>{{ high_score.daily_score }}</td>
                 </tr>
+                {% endif %}
                 {% endfor %}
             </table>
         </div>
 
-        <!-- Social Share Buttons -->
-        <div class="social-share">
-            <!-- Twitter -->
-            <a href="https://twitter.com/intent/tweet?text=I%20got%20{{ score }}%20points%20in%20Roadtrip%20Riddle.%20Try%20to%20beat%20me!%20roadtrip-riddle.onrender.com" target="_blank" class="button-style">Share on Twitter</a>
-        </div>
-        <div>
-            <!-- WhatsApp -->
-            <a href="https://wa.me/?text=I%20got%20{{ score }}%20points%20in%20Roadtrip%20Riddle.%20Try%20to%20beat%20me!%20roadtrip-riddle.onrender.com" target="_blank" class="button-style">Share on WhatsApp</a>
-        </div>
+        <!-- Submit Score Button -->
+        <a href="{{ url_for('login', score=score) }}" class="button-style">Submit My Score</a>
+
 
         <!-- Link to Explanations Page -->
         <div>
-            <a href="/explanations" class="button-style">Show Clue Explanations</a>
+            <a href="/explanations" class="button-style">Clue Explanations</a>
         </div>
 
-        <div>
-            <a href="/" class="button-style">Home</a>
-        </div>
+        <!-- Link to Home -->
+        <a href="/" class="button-style">
+            <i class="fas fa-home"></i>
+        </a>
     </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 </body>
 </html>

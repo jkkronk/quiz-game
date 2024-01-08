@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Challenge</title>
+    <title>Video</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -39,6 +39,7 @@
             background-color: #218838;
         }
     </style>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <script>
         function checkAnswer() {
             var userAnswer = document.getElementById("answerInput").value.toLowerCase().replace(/\s+/g, '');
@@ -53,28 +54,52 @@
             }
         }
     </script>
+
 </head>
 <body>
     <div class="video-container">
-        <h1>Roadtrip Riddle!</h1>
-        <video id="challengeVideo" autoplay>
-            <source src="{{ url_for('static', filename='quiz.mp4') }}" type="video/mp4">
+        <div>
+            <button id="togglePlayPause">
+                Start Video
+            </button>
+        </div>
+
+        <video id="challengeVideo">
+            <source src="{/var/data/quiz.mp4}" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-        <form id="answerForm" action="{{ url_for('submit_answer', user_name=user_name) }}" method="post">
-            <input type="hidden" name="start_time" value="{{ start_time }}">
+        <p>What is our destination?</p>
+        <form id="answerForm" action="{{url_for('submit_answer')}}" method="post">
+            <input type="hidden" name="start_time" id="startTime">
             <input type="hidden" name="answer" id="hiddenAnswer">
-            <div><input type="text" id="answerInput" placeholder="Where are we going?" required></div>
-            <div><button type="button" onclick="checkAnswer()">Submit Answer</button></div>
+            <div>
+                <input type="text" id="answerInput" placeholder="Atlantis" required>
+            </div>
+            <div>
+                <button type="button" onclick="checkAnswer()">Submit Answer</button>
+            </div>
         </form>
     </div>
     <script>
+        document.getElementById('startTime').value = 0; // Set start time to 0
+
+        // JavaScript to play button
+        document.getElementById('togglePlayPause').addEventListener('click', function() {
+            var video = document.getElementById('challengeVideo');
+            if (video.paused) {
+                video.play();
+                // Record the start time when the video is played
+                document.getElementById('startTime').value = Date.now() / 1000; // Current time in seconds
+            }
+        });
+
+        // JavaScript to submit form on enter keypress
         document.getElementById("answerInput").addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
             event.preventDefault(); // Prevent default form submit
             checkAnswer();
         }
-    });
+        });
     </script>
 
 </body>

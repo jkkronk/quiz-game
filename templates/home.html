@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>Home</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -48,20 +48,31 @@
         form {
             margin-bottom: 5px;
         }
+        .logo {
+            max-width: 200px; /* or any size you prefer */
+            height: auto; /* maintain aspect ratio */
+            display: block; /* makes the image a block element */
+            margin: 0 auto; /* center the logo in the container */
+            border: 2px solid #007bff; /* adds a blue border around the logo */
+        }
     </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 <body>
      <div class="container">
-        <h1>Roadtrip Riddle!</h1>
-        <form action="/" method="post">
-            <input type="text" name="name" placeholder="Enter your name" required>
-            <!-- Display warning message if user has already played today -->
-            {% if message %}
-                <div style="color: red; margin-top: 15px;">{{ message }}</div>
-            {% endif %}
-            <button type="submit" class="button-style">Start</button>
-        </form>
-        <a href="/high_scores" class="button-style">Highscore</a>
+        <div class="logo-container">
+        <img src="/static/logo.png" alt="Logo" class="logo">
+        </div>
+        <a href="/video" class="button-style">
+            <i class="fas fa-play"></i> <!-- Play icon -->
+        </a>
+        <a href="/high_scores" class="button-style">
+            <i class="fas fa-trophy"></i> <!-- Trophy icon -->
+        </a>
+        <a href="/info" class="button-style">
+            <i class="fas fa-info-circle"></i> <!-- Info icon -->
+        </a>
     </div>
 </body>
 </html>
