@@ -59,3 +59,4 @@ urllib3==2.1.0
 Werkzeug==2.2.2
 yarl==1.9.4
 zipp==3.17.0
+opencv-python==4.9.0.80

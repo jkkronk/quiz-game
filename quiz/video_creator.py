@@ -1,59 +1,41 @@
 import moviepy.editor as mpy
 import os
+import cv2
+import numpy as np
 
 
-def images_to_video(folder, audio_file=None, image_duration=0.4, batch_size=50):
-    audio = None
-    audio_duration = 0
-
-    # Load audio if provided
-    if audio_file:
-        audio = mpy.AudioFileClip(audio_file)
-        audio_duration = audio.duration
-
+def images_to_video(folder, image_duration=0.4, frame_rate=24, video_codec=cv2.VideoWriter_fourcc(*'MP4V')):
+    frame_folder = os.path.join(folder, "frames")
     # Get sorted list of image filenames
-    filenames = [f for f in os.listdir(folder) if f.endswith((".jpg", ".jpeg"))]
+    filenames = [f for f in os.listdir(frame_folder) if f.endswith((".jpg", ".jpeg"))]
     sorted_filenames = sorted(filenames, key=lambda x: int(x.split('.')[0]))
 
-    intermediate_files = []
-    batch_clips = []
+    if not sorted_filenames:
+        raise ValueError("No images found in the folder")
 
-    for i, filename in enumerate(sorted_filenames):
-        print(filename)
-        clip = mpy.ImageClip(os.path.join(folder, filename)).set_duration(image_duration)
-        batch_clips.append(clip)
+    # Read the first image to get the size
+    first_image = cv2.imread(os.path.join(frame_folder, sorted_filenames[0]))
+    height, width, layers = first_image.shape
 
-        # Process in batches and save to disk
-        if (i + 1) % batch_size == 0 or i == len(sorted_filenames) - 1:
-            intermediate_clip = mpy.concatenate_videoclips(batch_clips, method="compose")
-            intermediate_filename = f"intermediate_{len(intermediate_files)}.mp4"
-            intermediate_clip.write_videofile(os.path.join(folder, intermediate_filename), codec="libx264", fps=24)
-            intermediate_files.append(os.path.join(folder, intermediate_filename))
-            batch_clips = []  # Reset batch clips
+    # Define the codec and create VideoWriter object
+    out = cv2.VideoWriter(os.path.join(folder,"quiz.mp4"), video_codec, frame_rate, (width, height))
 
-            # Break if audio is shorter than the processed video duration
-            if audio_duration and audio_duration < sum([mpy.VideoFileClip(f).duration for f in intermediate_files]):
-                break
+    frame_count = int(frame_rate * image_duration)
 
-    print("Number of frames:", len(sorted_filenames))
-    print("Number of intermediate files:", len(intermediate_files))
+    for filename in sorted_filenames:
+        frame = cv2.imread(os.path.join(frame_folder, filename))
 
-    # Concatenate video files from disk
-    final_clips = [mpy.VideoFileClip(f) for f in intermediate_files]
-    final_clip = mpy.concatenate_videoclips(final_clips, method="compose")
+        # Check if image sizes are consistent
+        if frame.shape[0] != height or frame.shape[1] != width:
+            raise ValueError(f"Image size for {filename} does not match the first image size")
 
-    # Set audio if available
-    if audio_file:
-        final_clip = final_clip.set_audio(audio)
+        # Write the frame multiple times to meet the desired duration per image
+        for _ in range(frame_count):
+            out.write(frame)
 
-    # Optional: Delete intermediate files
-    for f in intermediate_files:
-        os.remove(f)
-
-    return final_clip
+    out.release()
 
 def create_new_video(data_dir="/var/data/"):
     # Load all images from data_dir
-    folder = os.path.join(data_dir, "frames")
-    movie = images_to_video(folder, os.path.join(data_dir, "quiz.mp3"))
-    movie.write_videofile(os.path.join(data_dir, "quiz.mp4"), fps=24, codec="libx264", audio_codec="aac")
+    images_to_video(data_dir)
+    #movie.write_videofile(os.path.join(data_dir, "quiz.mp4"), fps=24, codec="libx264", audio_codec="aac")
