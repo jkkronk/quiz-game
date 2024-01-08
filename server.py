@@ -179,9 +179,9 @@ def verify_password(username, password):
     if username in users and users[username] == password:
         return username
 
-@app.route('/update_quiz')
+@app.route('/clear_highscore')
 @auth.login_required
-def update_quiz():
+def clear_highscore():
     utils.clear_daily_high_scores()
     return "Highscores cleared!"
 
