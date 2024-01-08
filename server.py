@@ -192,6 +192,12 @@ def clear_highscore():
     utils.clear_daily_high_scores()
     return "Highscores cleared!"
 
+@app.route('/clear_quiz')
+@auth.login_required
+def new_video():
+    utils.remove_files_in_folder(os.environ.get('RR_DATA_PATH'))
+    return "Quiz created!"
+
 @app.route('/new_quiz')
 @auth.login_required
 def new_quiz():

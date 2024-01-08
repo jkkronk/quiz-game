@@ -1,6 +1,7 @@
 from moviepy.editor import VideoFileClip
 import json
-import asyncio
+import os
+import glob
 
 def clear_daily_high_scores():
     from server import app, db, HighScore
@@ -64,3 +65,22 @@ def save_high_score_to_json(user_name, score, file_name, add_if_existing=False):
     # Save back to file
     with open(file_name, 'w') as file:
         json.dump(high_scores, file, indent=4)
+
+
+def remove_files_in_folder(folder_path):
+    """
+    Removes all files in the specified folder.
+
+    Args:
+    folder_path (str): The path to the folder from which files will be removed.
+    """
+    # Create a pattern to match all files in the folder
+    file_pattern = os.path.join(folder_path, '*')
+
+    # List all files in the folder
+    files = glob.glob(file_pattern)
+
+    # Loop through the files and remove each one
+    for file in files:
+        if os.path.isfile(file):
+            os.remove(file)
