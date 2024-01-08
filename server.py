@@ -6,6 +6,7 @@ from flask_oauthlib.client import OAuth
 from flask_httpauth import HTTPBasicAuth
 
 import utils
+from quiz import quiz_creator, street_view_collector, video_creator
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -190,6 +191,24 @@ def verify_password(username, password):
 def clear_highscore():
     utils.clear_daily_high_scores()
     return "Highscores cleared!"
+
+@app.route('/new_quiz')
+@auth.login_required
+def new_quiz():
+    quiz_creator.create_new_quiz("/Users/JonatanMBA/Desktop/tmp")
+    return "Quiz created!"
+
+@app.route('/new_frames')
+@auth.login_required
+def new_frames():
+    street_view_collector.create_new_frames("/Users/JonatanMBA/Desktop/tmp")
+    return "Frames created!"
+
+@app.route('/new_video')
+@auth.login_required
+def new_video():
+    video_creator.create_new_video("/Users/JonatanMBA/Desktop/tmp")
+    return "Frames created!"
 
 if __name__ == '__main__':
     app.run(debug=True)
