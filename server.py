@@ -42,9 +42,11 @@ def home():
 # Route for the video page
 @app.route('/video')
 def video():
-    # Path to the text file with the answer
-    correct_answer = utils.get_answer("/var/data/quiz.json")
-    return render_template('video.html', correct_answer=correct_answer)
+    quiz_path = f"{os.get_environ('RR_DATA_PATH')}quiz.json"
+    video_path = f"{os.get_environ('RR_DATA_PATH')}quiz.mp4"
+
+    correct_answer = utils.get_answer(quiz_path)
+    return render_template('video.html', correct_answer=correct_answer, video_path=video_path)
 
 
 @app.route('/high_scores')
@@ -61,11 +63,11 @@ def info():
 
 @app.route('/submit_answer', methods=['POST'])
 def submit_answer():
-    video_file_path = "/var/data/quiz.mp4"
+    video_path = f"{os.get_environ('RR_DATA_PATH')}quiz.mp4"
     start_time = float(request.form['start_time'])
     end_time = time.time()
     time_taken = end_time - start_time
-    score = utils.calculate_score(time_taken, video_file_path)
+    score = utils.calculate_score(time_taken, video_path)
     session['latest_score'] = score
     return redirect(url_for('score', score=score))
 
@@ -166,8 +168,8 @@ with app.app_context():
 
 @app.route('/explanations')
 def explanations():
-    clues_and_explanations = utils.get_explanations("/var/data/quiz.json")
-    return render_template('explanations.html', explanations=clues_and_explanations)
+    quiz_path = f"{os.get_environ('RR_DATA_PATH')}quiz.json"
+    return render_template('explanations.html', explanations=quiz_path)
 
 
 @google.tokengetter
