@@ -194,7 +194,7 @@ def clear_highscore():
 
 @app.route('/clear_quiz')
 @auth.login_required
-def new_video():
+def clear_quiz():
     utils.remove_files_in_folder(os.environ.get('RR_DATA_PATH'))
     return "Quiz created!"
 
