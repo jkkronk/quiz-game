@@ -56,7 +56,7 @@ class QuizClues(BaseModel):
 def random_destination(data_path) -> str:
     # open the cities text file and pick a random city
     # return the city
-    path_to_cities = os.path.join(data_path, "cities.txt")
+    path_to_cities = os.path.join("./static", "cities.txt")
 
     # Opening the file
     with open(path_to_cities, 'r') as file:
