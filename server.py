@@ -174,7 +174,7 @@ with app.app_context():
 @app.route('/explanations')
 def explanations():
     quiz_path = os.path.join(os.environ.get('RR_DATA_PATH'),"quiz.json")
-    return render_template('explanations.html', explanations=quiz_path)
+    return render_template('explanations.html', explanations=utils.get_explanations(quiz_path))
 
 
 @google.tokengetter

@@ -39,7 +39,7 @@ def get_explanations(file_path):
     clues_and_explanations = []
     for idx, clue in enumerate(clues):
         clues_and_explanations.append("<b>" + clue + "</b>")
-        clues_and_explanations.append("Explanation: " + explanations[idx] + "<br><br>")
+        clues_and_explanations.append(explanations[idx] + "<br><br>")
 
     return clues_and_explanations
 
