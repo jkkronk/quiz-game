@@ -1,8 +1,6 @@
-import moviepy.editor as mpy
 import os
 import cv2
-import numpy as np
-
+from moviepy.editor import VideoFileClip, AudioFileClip
 
 def images_to_video(folder, image_duration=0.4, frame_rate=24, video_codec=cv2.VideoWriter_fourcc(*'MP4V')):
     frame_folder = os.path.join(folder, "frames")
@@ -18,7 +16,7 @@ def images_to_video(folder, image_duration=0.4, frame_rate=24, video_codec=cv2.V
     height, width, layers = first_image.shape
 
     # Define the codec and create VideoWriter object
-    out = cv2.VideoWriter(os.path.join(folder,"quiz.mp4"), video_codec, frame_rate, (width, height))
+    out = cv2.VideoWriter(os.path.join(folder,"quiz_no_audio.mp4"), video_codec, frame_rate, (width, height))
 
     frame_count = int(frame_rate * image_duration)
 
@@ -38,4 +36,11 @@ def images_to_video(folder, image_duration=0.4, frame_rate=24, video_codec=cv2.V
 def create_new_video(data_dir="/var/data/"):
     # Load all images from data_dir
     images_to_video(data_dir)
-    #movie.write_videofile(os.path.join(data_dir, "quiz.mp4"), fps=24, codec="libx264", audio_codec="aac")
+    # Load the video file
+    video_clip = VideoFileClip(os.path.join(data_dir, "quiz_no_audio.mp4"))
+    # Load the audio file
+    audio_clip = AudioFileClip(os.path.join(data_dir, "quiz.mp3"))
+    final_clip = video_clip.set_audio(audio_clip)
+
+    # Write the result to a file
+    final_clip.write_videofile(os.path.join(data_dir, "quiz.mp4"), codec='libx264', audio_codec='aac')
