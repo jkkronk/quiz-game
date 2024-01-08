@@ -208,7 +208,7 @@ def new_frames():
 @auth.login_required
 def new_video():
     video_creator.create_new_video("/Users/JonatanMBA/Desktop/tmp")
-    return "Frames created!"
+    return "Video created!"
 
 if __name__ == '__main__':
     app.run(debug=True)
