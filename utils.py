@@ -1,7 +1,7 @@
 from moviepy.editor import VideoFileClip
 import json
 import os
-import glob
+import shutil
 
 def clear_daily_high_scores():
     from server import app, db, HighScore
@@ -67,20 +67,15 @@ def save_high_score_to_json(user_name, score, file_name, add_if_existing=False):
         json.dump(high_scores, file, indent=4)
 
 
-def remove_files_in_folder(folder_path):
-    """
-    Removes all files in the specified folder.
+def remove_files_and_folders(folder_path):
+    # Check each item in the folder
+    for item in os.listdir(folder_path):
+        item_path = os.path.join(folder_path, item)
 
-    Args:
-    folder_path (str): The path to the folder from which files will be removed.
-    """
-    # Create a pattern to match all files in the folder
-    file_pattern = os.path.join(folder_path, '*')
+        # If the item is a file, remove it
+        if os.path.isfile(item_path):
+            os.remove(item_path)
+        # If the item is a directory, remove the directory and its contents
+        elif os.path.isdir(item_path):
+            shutil.rmtree(item_path)
 
-    # List all files in the folder
-    files = glob.glob(file_pattern)
-
-    # Loop through the files and remove each one
-    for file in files:
-        if os.path.isfile(file):
-            os.remove(file)
