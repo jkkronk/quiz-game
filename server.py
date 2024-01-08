@@ -195,19 +195,19 @@ def clear_highscore():
 @app.route('/new_quiz')
 @auth.login_required
 def new_quiz():
-    quiz_creator.create_new_quiz("/Users/JonatanMBA/Desktop/tmp")
+    quiz_creator.create_new_quiz()
     return "Quiz created!"
 
 @app.route('/new_frames')
 @auth.login_required
 def new_frames():
-    street_view_collector.create_new_frames("/Users/JonatanMBA/Desktop/tmp")
+    street_view_collector.create_new_frames()
     return "Frames created!"
 
 @app.route('/new_video')
 @auth.login_required
 def new_video():
-    video_creator.create_new_video("/Users/JonatanMBA/Desktop/tmp")
+    video_creator.create_new_video()
     return "Video created!"
 
 if __name__ == '__main__':
