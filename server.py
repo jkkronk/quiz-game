@@ -127,7 +127,7 @@ def submit_score():
         if existing:
             # Update existing score
             existing.daily_score = score
-            existing.total_score += score
+            existing.total_score += int(score)
         else:
             session['temp_score'] = request.args.get('score')
             return render_template('enter_username.html', google_user_id=google_user_id)
