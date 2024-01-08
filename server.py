@@ -42,8 +42,8 @@ def home():
 # Route for the video page
 @app.route('/video')
 def video():
-    quiz_path = f"{os.get_environ('RR_DATA_PATH')}quiz.json"
-    video_path = f"{os.get_environ('RR_DATA_PATH')}quiz.mp4"
+    quiz_path = f"{os.environ.get('RR_DATA_PATH')}quiz.json"
+    video_path = f"{os.environ.get('RR_DATA_PATH')}quiz.mp4"
 
     correct_answer = utils.get_answer(quiz_path)
     return render_template('video.html', correct_answer=correct_answer, video_path=video_path)
@@ -63,7 +63,7 @@ def info():
 
 @app.route('/submit_answer', methods=['POST'])
 def submit_answer():
-    video_path = f"{os.get_environ('RR_DATA_PATH')}quiz.mp4"
+    video_path = f"{os.environ.get('RR_DATA_PATH')}quiz.mp4"
     start_time = float(request.form['start_time'])
     end_time = time.time()
     time_taken = end_time - start_time
@@ -168,7 +168,7 @@ with app.app_context():
 
 @app.route('/explanations')
 def explanations():
-    quiz_path = f"{os.get_environ('RR_DATA_PATH')}quiz.json"
+    quiz_path = f"{os.environ.get('RR_DATA_PATH')}quiz.json"
     return render_template('explanations.html', explanations=quiz_path)
 
 

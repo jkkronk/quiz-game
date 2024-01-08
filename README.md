@@ -9,8 +9,10 @@ Have fun!
 ## Usage
 ```bash
 export RR_DATA_PATH=/path/to/quiz-game/data
-export OPENAI_API_KEY=sk-...
-export GOOGLE_API_KEY=...
+export FLASK_USER=admin_user
+export FLASK_PASSWORD=your_password
+export GOOGLE_OAUTH_KEY=your_key
+export GOOGLE_OAUTH_SECRET=your_secret
 export FLASK_APP=server.py
 flash run
 ```
