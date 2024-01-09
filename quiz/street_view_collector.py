@@ -188,7 +188,12 @@ def create_new_frames(data_dir="/var/data"):
     with open(os.path.join(data_dir,"path_coordinates.pkl"), "rb") as f:
         path_coordinates = pickle.load(f)
     # Check if there is more than 100 files in the frames folder
-    no_files = len(os.listdir(os.path.join(data_dir,"frames")))
+    frames_path = os.path.join(data_dir, "frames")
+    # Check if the frames folder exists, and create it if it doesn't
+    if not os.path.exists(frames_path):
+        os.makedirs(frames_path)
+    no_files = len(os.listdir(frames_path))
+
     itr = 0
     while no_files < 100:
         fetch_street_view_images(path_coordinates, data_dir, "desktop")
