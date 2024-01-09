@@ -187,4 +187,13 @@ def is_gray_image(image_data):
 def create_new_frames(data_dir="/var/data"):
     with open(os.path.join(data_dir,"path_coordinates.pkl"), "rb") as f:
         path_coordinates = pickle.load(f)
-    fetch_street_view_images(path_coordinates, data_dir, "desktop")
+    # Check if there is more than 100 files in the frames folder
+    no_files = len(os.listdir(os.path.join(data_dir,"frames")))
+    itr = 0
+    while no_files < 100:
+        fetch_street_view_images(path_coordinates, data_dir, "desktop")
+        no_files = len(os.listdir(os.path.join(data_dir,"frames")))
+        # if we have done this 10 times and still have less than 100 files, then we have a problem
+        itr += 1
+        if itr > 10:
+            raise Exception("Failed to create frames")

@@ -80,7 +80,9 @@ def submit_answer():
 @app.route('/score/<score>')
 def score(score):
     daily_scores = HighScore.query.order_by(HighScore.daily_score.desc()).all()
-    return render_template('score.html', score=score, daily_high_scores=daily_scores)
+    quiz_path = os.path.join(os.environ.get('RR_DATA_PATH'), "quiz.json")
+    correct_answer = utils.get_answer(quiz_path)
+    return render_template('score.html', score=score, daily_high_scores=daily_scores, correct_answer=correct_answer)
 
 
 @app.route('/login')

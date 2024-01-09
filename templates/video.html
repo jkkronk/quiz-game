@@ -124,6 +124,14 @@
             }
         });
 
+        // Event listener for the video ending
+        document.getElementById('challengeVideo').addEventListener('ended', function() {
+            // Assuming you have a way to calculate or retrieve the score
+            var score = 0;
+            // Redirect to the score page with the score
+            window.location.href = "/score/" + score;
+        });
+
         // Function to check answer (remains unchanged)
         function checkAnswer() {
             var userAnswer = document.getElementById("answerInput").value.toLowerCase().replace(/\s+/g, '');
