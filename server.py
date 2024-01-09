@@ -9,7 +9,7 @@ import utils
 from quiz import quiz_creator, street_view_collector, video_creator
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.environ.get('RR_DATA_PATH')}users.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:////var/data/users.db"
 app.secret_key = os.urandom(24)  # Generate a random key
 auth = HTTPBasicAuth()
 
@@ -219,4 +219,4 @@ def new_video():
     return "Video created!"
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
