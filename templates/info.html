@@ -21,6 +21,12 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
+        .privacy p{
+            max-width: 400px; /* or any size you prefer */
+            text-align: center;
+            margin-left: 100px;
+            padding: 0;
+        }
         button, .button-style {
             background-color: #007bff;
             color: white;
@@ -37,13 +43,32 @@
         button:hover, .button-style:hover {
             background-color: #0056b3;
         }
+        .logo {
+            max-width: 200px; /* or any size you prefer */
+            height: auto; /* maintain aspect ratio */
+            display: block; /* makes the image a block element */
+            margin: 0 auto; /* center the logo in the container */
+            border: 2px solid #007bff; /* adds a blue border around the logo */
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 </head>
 <body>
     <div class="score-container">
-        <h1>About Roadtrip riddle</h1>
-        <p> Where are we going? Have fun!</p>
+        <img src="/static/logo.png" alt="Logo" class="logo">
+        <p>Do you also like riddles? Ride along with me and try to guess our next destination.</p> <br>
+        <b>Contact me: </b>  <br>
+        <p> jonatan.kronander@gmail.com </p> <br>
+        <b>Privacy statement: </b>  <br>
+        <div class="privacy">
+        <p>When you sign up for or use Roadtrip Riddle, you give us certain information
+        voluntarily. This includes your name, email address, and any other information
+        you give us. If you link your Facebook or Google account or accounts from other
+        third party services to Roadtrip Riddle, we also get information from those
+        accounts (such as your friends or contacts). The information we get from those
+        services depends on your settings and their privacy policies, so please check
+        what those are. Contact us if you want to delete your data.</p>
+        </div>
         <a href="/" class="button-style">
             <i class="fas fa-home"></i> <!-- Home icon -->
         </a>

@@ -6,6 +6,7 @@ from flask_oauthlib.client import OAuth
 from flask_httpauth import HTTPBasicAuth
 
 import utils
+from quiz import quiz_creator, street_view_collector, video_creator
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -79,7 +80,9 @@ def submit_answer():
 @app.route('/score/<score>')
 def score(score):
     daily_scores = HighScore.query.order_by(HighScore.daily_score.desc()).all()
-    return render_template('score.html', score=score, daily_high_scores=daily_scores)
+    quiz_path = os.path.join(os.environ.get('RR_DATA_PATH'), "quiz.json")
+    correct_answer = utils.get_answer(quiz_path)
+    return render_template('score.html', score=score, daily_high_scores=daily_scores, correct_answer=correct_answer)
 
 
 @app.route('/login')
@@ -126,7 +129,7 @@ def submit_score():
         if existing:
             # Update existing score
             existing.daily_score = score
-            existing.total_score += score
+            existing.total_score += int(score)
         else:
             session['temp_score'] = request.args.get('score')
             return render_template('enter_username.html', google_user_id=google_user_id)
@@ -173,7 +176,7 @@ with app.app_context():
 @app.route('/explanations')
 def explanations():
     quiz_path = os.path.join(os.environ.get('RR_DATA_PATH'),"quiz.json")
-    return render_template('explanations.html', explanations=quiz_path)
+    return render_template('explanations.html', explanations=utils.get_explanations(quiz_path))
 
 
 @google.tokengetter
@@ -190,6 +193,30 @@ def verify_password(username, password):
 def clear_highscore():
     utils.clear_daily_high_scores()
     return "Highscores cleared!"
+
+@app.route('/clear_quiz')
+@auth.login_required
+def clear_quiz():
+    utils.remove_files_and_folders(os.environ.get('RR_DATA_PATH'))
+    return "Quiz cleared!"
+
+@app.route('/new_quiz')
+@auth.login_required
+def new_quiz():
+    quiz_creator.create_new_quiz(os.environ.get('RR_DATA_PATH'))
+    return "Quiz created!"
+
+@app.route('/new_frames')
+@auth.login_required
+def new_frames():
+    street_view_collector.create_new_frames(os.environ.get('RR_DATA_PATH'))
+    return "Frames created!"
+
+@app.route('/new_video')
+@auth.login_required
+def new_video():
+    video_creator.create_new_video(os.environ.get('RR_DATA_PATH'))
+    return "Video created!"
 
 if __name__ == '__main__':
     app.run(debug=True)

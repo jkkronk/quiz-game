@@ -1,13 +1,14 @@
 from moviepy.editor import VideoFileClip
 import json
-import asyncio
+import os
+import shutil
 
 def clear_daily_high_scores():
     from server import app, db, HighScore
     with app.app_context():  # This line creates the application context
         try:
             # Reset daily scores for all users
-            HighScore.query.update({HighScore.daily_score: 0})
+            HighScore.query.update({HighScore.daily_score: -1})
             db.session.commit()
         except Exception as e:
             print("Error resetting daily high scores:", e)
@@ -39,7 +40,7 @@ def get_explanations(file_path):
     clues_and_explanations = []
     for idx, clue in enumerate(clues):
         clues_and_explanations.append("<b>" + clue + "</b>")
-        clues_and_explanations.append("Explanation: " + explanations[idx] + "<br><br>")
+        clues_and_explanations.append(explanations[idx] + "<br><br>")
 
     return clues_and_explanations
 
@@ -64,3 +65,17 @@ def save_high_score_to_json(user_name, score, file_name, add_if_existing=False):
     # Save back to file
     with open(file_name, 'w') as file:
         json.dump(high_scores, file, indent=4)
+
+
+def remove_files_and_folders(folder_path):
+    # Check each item in the folder
+    for item in os.listdir(folder_path):
+        item_path = os.path.join(folder_path, item)
+
+        # If the item is a file, remove it
+        if os.path.isfile(item_path):
+            os.remove(item_path)
+        # If the item is a directory, remove the directory and its contents
+        elif os.path.isdir(item_path):
+            shutil.rmtree(item_path)
+
